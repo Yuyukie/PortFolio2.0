@@ -4,6 +4,10 @@ const mysql = require("mysql2");
 const cors = require("cors");
 require("dotenv").config(); // Charger les variables d'environnement à partir de .env
 
+// Importer les routes
+const userRoutes = require("./routes/user");
+const projectsRoutes = require("./routes/projects");
+
 // Créez l'application Express
 const app = express();
 
@@ -43,8 +47,10 @@ app.use(
 
 app.use(bodyParser.json());
 
+// Options CORS pour les requêtes prévol (OPTIONS)
 app.options("*", cors());
 
+// Middleware pour les headers CORS
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
@@ -65,6 +71,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Utilisation des routes
+app.use("/api/user", userRoutes);
+app.use("/api/projects", projectsRoutes);
+
+// Exposez la connexion à la base de données pour l'utiliser dans d'autres modules
 app.set("db", db);
 
 module.exports = app;
