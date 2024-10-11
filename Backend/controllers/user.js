@@ -15,19 +15,25 @@ exports.login = (req, res) => {
     }
 
     const user = results[0];
+
     bcrypt.compare(user_password, user.user_password, (err, isMatch) => {
-      if (err) return res.status(500).json({ message: "Erreur de serveur" });
+      if (err) {
+        console.log("Erreur dans bcrypt.compare:", err);
+        return res.status(500).json({ message: "Erreur de serveur" });
+      }
+      console.log("isMatch:", isMatch); // Afficher le résultat de la comparaison
       if (isMatch) {
         // Créer un token JWT
         const token = jwt.sign(
           { userId: user.user_id, userEmail: user.user_email },
-          process.env.JWT_SECRET, // Clé secrète pour signer le token
-          { expiresIn: "24h" } // Expiration du token
+          process.env.JWT_SECRET,
+          { expiresIn: "24h" }
         );
         return res
           .status(200)
           .json({ token, user, message: "Connexion réussie" });
       } else {
+        console.log("Mot de passe incorrect");
         return res
           .status(401)
           .json({ message: "Email ou mot de passe incorrect" });

@@ -11,6 +11,10 @@ const projectsRoutes = require("./routes/projects");
 // Créez l'application Express
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  // ajoutez les autres origines que vous souhaitez autoriser
+];
 // Créez une connexion à la base de données MySQL
 const db = mysql.createConnection({
   host: process.env.DB_HOST || "localhost",
